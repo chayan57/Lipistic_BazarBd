@@ -1012,7 +1012,7 @@ textarea.dazro-input {
 }
 
 .dazro-product-card:hover {
-  transform: translateY(-3px);
+
   box-shadow:
     0 12px 30px
     rgba(17, 24, 39, 0.08);
@@ -2683,7 +2683,14 @@ textarea.dazro-input {
     background 0.25s ease;
 }
 
-
+.dazro-add-cart-btn:hover{
+  
+  background: linear-gradient(
+    135deg,
+    #b4b4b4 0%,
+    #ed3f8d 100%
+  );
+}
 
 /* =========================================
    Arrow
@@ -2709,25 +2716,7 @@ textarea.dazro-input {
   border-width: 2px;
 }
 
-/* =========================================
-   Disabled / Out Of Stock
-========================================= */
 
-.dazro-add-cart-btn:disabled {
-  opacity: 1;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-.dazro-add-cart-btn:disabled {
-  background: #e7e8dc;
-  color: #8b7b83;
-}
-
-.dazro-add-cart-btn:disabled .dazro-cart-arrow {
-  transform: none;
-}
 
 .dazro-product-image {
   display: block !important;
