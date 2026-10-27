@@ -1,81 +1,85 @@
 "use client";
- 
-import React, { useEffect, useState, useCallback, useRef } from "react"; 
-import Link from "next/link"; 
-import Image from "next/image"; 
-import { useDispatch } from "react-redux"; 
-import { setCart } from "./store/cartSlice"; 
- 
-function Products() { 
-  const dispatch = useDispatch(); 
- 
-  const [products, setProducts] = useState([]); 
-  const [loading, setLoading] = useState(true); 
-  const [error, setError] = useState(""); 
-  const [addingId, setAddingId] = useState(null); 
-  const [reviewSummaries, setReviewSummaries] = useState({});
- 
-  // Use a ref to track adding state reliably without triggering re-renders or stale closures 
-  const isAddingRef = useRef(false); 
- 
-  // ===================================================== 
-  // Fetch Products 
-  // ===================================================== 
-  useEffect(() => { 
-    const controller = new AbortController(); 
- 
-    const fetchProducts = async () => { 
-      try { 
-        setLoading(true); 
-        setError(""); 
- 
-        const response = await fetch("/api/products", { 
-          method: "GET", 
-          signal: controller.signal, 
-          cache: "no-store", 
-        }); 
- 
-        const data = await response.json(); 
- 
-        if (!response.ok || !data.success) { 
-          throw new Error( 
-            data.message || "Failed to fetch products." 
-          ); 
-        } 
- 
-        const productList = Array.isArray(data.products) 
-          ? data.products 
-          : []; 
- 
-        setProducts(productList); 
-      } catch (err) { 
-        if (err.name === "AbortError") { 
-          return; 
-        } 
- 
-        console.error("Products error:", err); 
-        setError( 
-          err.message || "Failed to load products." 
-        ); 
-      } finally { 
-        if (!controller.signal.aborted) { 
-          setLoading(false); 
-        } 
-      } 
-    }; 
- 
-    fetchProducts(); 
- 
-    return () => { 
-      controller.abort(); 
-    }; 
-  }, []); 
 
-  // =====================================================
-  // Fetch Product Review Summaries
-  // =====================================================
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from "react";
+
+import Image from "next/image";
+import { createPortal } from "react-dom";
+import { useDispatch } from "react-redux";
+import { setCart } from "./store/cartSlice";
+
+import ProductQuickView from "./ProductQuickView";
+
+
+function Products() {
+  const dispatch = useDispatch();
+
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [addingId, setAddingId] = useState(null);
+  const [reviewSummaries, setReviewSummaries] = useState({});
+
+  // Quick View
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  const isAddingRef = useRef(false);
+
   useEffect(() => {
-    if (products.length === 0) {
+    setIsMounted(true);
+  }, []);
+
+  // Fetch Products
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await fetch("/api/products", {
+          method: "GET",
+          signal: controller.signal,
+          cache: "no-store",
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(
+            data.message || "Failed to fetch products."
+          );
+        }
+
+        setProducts(
+          Array.isArray(data.products) ? data.products : []
+        );
+      } catch (err) {
+        if (err.name === "AbortError") return;
+
+        console.error("Products error:", err);
+        setError(err.message || "Failed to load products.");
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchProducts();
+
+    return () => controller.abort();
+  }, []);
+
+  // Fetch Review Summaries
+  useEffect(() => {
+    if (!products.length) {
       setReviewSummaries({});
       return;
     }
@@ -88,7 +92,9 @@ function Products() {
           products.map(async (product) => {
             try {
               const response = await fetch(
-                `/api/reviews?productId=${encodeURIComponent(product._id)}`,
+                `/api/reviews?productId=${encodeURIComponent(
+                  product._id
+                )}`,
                 {
                   method: "GET",
                   signal: controller.signal,
@@ -98,32 +104,21 @@ function Products() {
 
               const data = await response.json();
 
-              if (!response.ok || !data.success) {
-                return {
-                  productId: product._id,
-                  averageRating: 0,
-                  reviewCount: 0,
-                };
-              }
-
               return {
                 productId: product._id,
-                averageRating: Number(
-                  data.summary?.averageRating || 0
-                ),
-                reviewCount: Number(
-                  data.summary?.reviewCount || 0
-                ),
+                averageRating:
+                  response.ok && data.success
+                    ? Number(data.summary?.averageRating || 0)
+                    : 0,
+                reviewCount:
+                  response.ok && data.success
+                    ? Number(data.summary?.reviewCount || 0)
+                    : 0,
               };
             } catch (err) {
-              if (err.name === "AbortError") {
-                throw err;
-              }
+              if (err.name === "AbortError") throw err;
 
-              console.error(
-                `Review summary error for product ${product._id}:`,
-                err
-              );
+              console.error("Review summary error:", err);
 
               return {
                 productId: product._id,
@@ -133,6 +128,8 @@ function Products() {
             }
           })
         );
+
+        if (controller.signal.aborted) return;
 
         const summaryMap = {};
 
@@ -145,189 +142,227 @@ function Products() {
 
         setReviewSummaries(summaryMap);
       } catch (err) {
-        if (err.name === "AbortError") {
-          return;
+        if (err.name !== "AbortError") {
+          console.error("Review summaries error:", err);
         }
-
-        console.error("Review summaries error:", err);
       }
     };
 
     fetchReviewSummaries();
 
-    return () => {
-      controller.abort();
-    };
+    return () => controller.abort();
   }, [products]);
- 
-  // ===================================================== 
-  // Add To Cart 
-  // ===================================================== 
-  const handleAddToCart = useCallback( 
-    async (product) => { 
-      const stock = Number(product.stock || 0); 
- 
-      if (stock <= 0) return; 
- 
-      // Prevent concurrent/duplicate add requests 
-      if (isAddingRef.current) return; 
- 
-      try { 
-        isAddingRef.current = true; 
-        setAddingId(product._id); 
-        setError(""); 
- 
-        const response = await fetch("/api/cart", { 
-          method: "POST", 
-          headers: { 
-            "Content-Type": "application/json", 
-          }, 
-          body: JSON.stringify({ 
-            productId: product._id, 
-            quantity: 1, 
-          }), 
-        }); 
- 
-        const data = await response.json(); 
- 
-        if (!response.ok || !data.success) { 
-          throw new Error( 
-            data.message || "Failed to add product to cart." 
-          ); 
-        } 
- 
-        // Sync Redux with MongoDB cart 
-        dispatch(setCart(data.cart?.items || [])); 
-      } catch (err) { 
-        console.error("Add to cart error:", err); 
-        setError( 
-          err.message || "Failed to add product to cart." 
-        ); 
-      } finally { 
-        isAddingRef.current = false; 
-        setAddingId(null); 
-      } 
-    }, 
-    [dispatch] 
-  ); 
- 
-  // ===================================================== 
-  // Loading State 
-  // ===================================================== 
-  if (loading && products.length === 0) { 
-    return ( 
-      <main className="dazro-products-page"> 
-        <div className="container py-5 text-center"> 
-          <div className="spinner-border" role="status" /> 
-          <p className="mt-3 mb-0 text-muted"> 
-            Loading products... 
-          </p> 
-        </div> 
-      </main> 
-    ); 
-  } 
- 
-  // ===================================================== 
-  // Render Products 
-  // ===================================================== 
-  return ( 
-    <main className="dazro-products-page"> 
-      <div className="container py-5"> 
-        <div className="mb-4"> 
-          <h1 className="dazro-products-title"> 
-            Our Products 
-          </h1> 
-          <p className="dazro-products-subtitle"> 
-            Discover our latest products. 
-          </p> 
-        </div> 
- 
-        {error && ( 
-          <div className="alert alert-danger">{error}</div> 
-        )} 
- 
-        {!error && products.length === 0 && ( 
-          <div className="text-center py-5"> 
-            <h5>No products available.</h5> 
-          </div> 
-        )} 
- 
-        <div className="row g-4"> 
-          {products.map((product, index) => ( 
-            <ProductCard 
-              key={product._id} 
-              product={product} 
-              index={index} 
-              isAdding={addingId === product._id} 
+
+  // Add to Cart
+  const handleAddToCart = useCallback(
+    async (product) => {
+      const stock = Number(product.stock || 0);
+
+      if (stock <= 0 || isAddingRef.current) return;
+
+      try {
+        isAddingRef.current = true;
+        setAddingId(product._id);
+        setError("");
+
+        const response = await fetch("/api/cart", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            productId: product._id,
+            quantity: 1,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(
+            data.message || "Failed to add product to cart."
+          );
+        }
+
+        dispatch(setCart(data.cart?.items || []));
+      } catch (err) {
+        console.error("Add to cart error:", err);
+        setError(err.message || "Failed to add product to cart.");
+      } finally {
+        isAddingRef.current = false;
+        setAddingId(null);
+      }
+    },
+    [dispatch]
+  );
+
+  // Open Quick View
+  const openQuickView = useCallback((product) => {
+    setQuickViewProduct(product);
+  }, []);
+
+  // Close Quick View
+  const closeQuickView = useCallback(() => {
+    setQuickViewProduct(null);
+  }, []);
+
+  if (loading && products.length === 0) {
+    return (
+      <main className="dazro-products-page">
+        <div className="container py-5 text-center">
+          <div className="spinner-border" role="status" />
+          <p className="mt-3 mb-0 text-muted">
+            Loading products...
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className="dazro-products-page">
+      <div className="container py-5">
+        <div className="mb-4">
+          <h1 className="dazro-products-title">
+            Our Products
+          </h1>
+
+          <p className="dazro-products-subtitle">
+            Discover our latest products.
+          </p>
+        </div>
+
+        {error && (
+          <div className="alert alert-danger" role="alert">
+            {error}
+          </div>
+        )}
+
+        {!error && products.length === 0 && (
+          <div className="text-center py-5">
+            <h5>No products available.</h5>
+          </div>
+        )}
+
+        <div className="row g-4">
+          {products.map((product, index) => (
+            <ProductCard
+              key={product._id}
+              product={product}
+              index={index}
+              isAdding={addingId === product._id}
               onAddToCart={handleAddToCart}
+              onQuickView={openQuickView}
               reviewSummary={
                 reviewSummaries[product._id] || {
                   averageRating: 0,
                   reviewCount: 0,
                 }
               }
-            /> 
-          ))} 
-        </div> 
-      </div> 
-    </main> 
-  ); 
-} 
- 
-// ===================================================== 
-// Isolated & Memoized Product Card Component 
-// ===================================================== 
-const ProductCard = React.memo( 
-  ({ product, index, isAdding, onAddToCart, reviewSummary }) => { 
-    const image = product.images?.[0] || ""; 
-    const stock = Number(product.stock || 0); 
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Mobile and Desktop Quick View Popup */}
+      {isMounted &&
+        quickViewProduct &&
+        createPortal(
+          <ProductQuickView
+            product={quickViewProduct}
+            onClose={closeQuickView}
+          />,
+          document.body
+        )}
+    </main>
+  );
+}
+
+// Product Card
+const ProductCard = React.memo(
+  ({
+    product,
+    index,
+    isAdding,
+    onAddToCart,
+    onQuickView,
+    reviewSummary,
+  }) => {
+    const firstImage = product.images?.[0];
+
+    const image =
+      typeof firstImage === "string"
+        ? firstImage
+        : firstImage?.url || product.image || "";
+
+    const stock = Number(product.stock || 0);
     const outOfStock = stock <= 0;
-    const averageRating = Number(reviewSummary?.averageRating || 0);
-    const reviewCount = Number(reviewSummary?.reviewCount || 0);
- 
-    return ( 
-      <div className="col-12 col-sm-6 col-lg-4 col-xl-3"> 
-        <div className="dazro-product-card"> 
-          {/* Product Image */} 
-          <Link 
-            href={`/products/${product._id}`} 
-            className="text-decoration-none" 
-          > 
-            <div className="dazro-product-image-wrap"> 
-              {image ? ( 
-                <> 
-                  <Image 
-                    src={image} 
-                    alt={product.name} 
-                    className="dazro-product-image" 
-                    width={400} 
-                    height={400} 
-                    priority={index < 4} 
-                  /> 
-                  <span className="dazro-product-shine"></span> 
-                </> 
-              ) : ( 
-                <div className="dazro-product-no-image"> 
-                  No Image 
-                </div> 
-              )} 
-            </div> 
-          </Link> 
- 
-          {/* Product Info */} 
-          <div className="p-3"> 
-            {product.brand && ( 
-              <small className="dazro-product-brand"> 
-                {product.brand} 
-              </small> 
+
+    const averageRating = Number(
+      reviewSummary?.averageRating || 0
+    );
+
+    const reviewCount = Number(
+      reviewSummary?.reviewCount || 0
+    );
+
+    const handleQuickViewClick = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      onQuickView(product);
+    };
+
+    return (
+      <div className="col-12 col-sm-6 col-lg-4 col-xl-3">
+        <div className="dazro-product-card">
+          {/* Product Image */}
+          <button
+            type="button"
+            onClick={handleQuickViewClick}
+            className="border-0 bg-transparent p-0 w-100 text-start"
+            style={{
+              cursor: "pointer",
+              touchAction: "manipulation",
+            }}
+            aria-label={`Quick view ${product.name}`}
+          >
+            <div className="dazro-product-image-wrap">
+              {image ? (
+                <>
+                  <Image
+                    src={image}
+                    alt={product.name}
+                    className="dazro-product-image"
+                    width={400}
+                    height={400}
+                    priority={index < 4}
+                  />
+                  <span className="dazro-product-shine" />
+                </>
+              ) : (
+                <div className="dazro-product-no-image">
+                  No Image
+                </div>
+              )}
+            </div>
+          </button>
+
+          {/* Product Information */}
+          <div className="p-3">
+            {product.brand && (
+              <small className="dazro-product-brand">
+                {product.brand}
+              </small>
             )}
 
-            {/* Reviews */}
+            {/* Review Summary */}
             {reviewCount > 0 && (
               <div className="dazro-product-review-summary">
                 <span
                   className="dazro-product-review-stars"
-                  aria-label={`${averageRating.toFixed(1)} out of 5 stars from ${reviewCount} reviews`}
+                  aria-label={`${averageRating.toFixed(
+                    1
+                  )} out of 5 stars from ${reviewCount} reviews`}
                 >
                   {[1, 2, 3, 4, 5].map((star) => (
                     <span
@@ -353,69 +388,89 @@ const ProductCard = React.memo(
                 </span>
               </div>
             )}
- 
-            <Link 
-              href={`/products/${product._id}`} 
-              className="text-decoration-none" 
-            > 
-              <h3 className="dazro-product-name"> 
-                {product.name} 
-              </h3> 
-            </Link> 
- 
-            <div className="dazro-product-price"> 
-              ৳ {Number(product.price || 0).toLocaleString()} 
-            </div> 
- 
-            {Number(product.oldPrice || 0) > 0 && ( 
-              <div className="dazro-product-old-price"> 
-                ৳ {Number(product.oldPrice).toLocaleString()} 
-              </div> 
-            )} 
- 
-            {/* Stock */} 
-            {outOfStock ? ( 
-              <div className="dazro-product-stock-out"> 
-                Out of stock 
-              </div> 
-            ) : ( 
-              <div className="dazro-product-stock"> 
-                {stock} available 
-              </div> 
-            )} 
- 
-            {/* Add To Cart Button */} 
-            <button 
-              type="button" 
-              className="btn dazro-add-cart-btn" 
-              onClick={() => onAddToCart(product)} 
-              disabled={outOfStock || isAdding} 
-            > 
-              {outOfStock ? ( 
-                "Out of Stock" 
-              ) : isAdding ? ( 
-                <> 
-                  <span 
-                    className="spinner-border spinner-border-sm me-1" 
-                    role="status" 
-                    aria-hidden="true" 
-                  /> 
-                  <span>Adding...</span> 
-                </> 
-              ) : ( 
-                <> 
-                  <span>Add to Cart</span> 
-                  <span className="dazro-cart-arrow">→</span> 
-                </> 
-              )} 
-            </button> 
-          </div> 
-        </div> 
-      </div> 
-    ); 
-  } 
-); 
- 
-ProductCard.displayName = "ProductCard"; 
- 
+
+            {/* Product Name */}
+            <button
+              type="button"
+              onClick={handleQuickViewClick}
+              className="border-0 bg-transparent p-0 text-start w-100"
+              style={{
+                cursor: "pointer",
+                touchAction: "manipulation",
+              }}
+            >
+              <h3 className="dazro-product-name">
+                {product.name}
+              </h3>
+            </button>
+
+            {/* Product Price */}
+            <button
+              type="button"
+              onClick={handleQuickViewClick}
+              className="border-0 bg-transparent p-0 text-start w-100"
+              style={{
+                cursor: "pointer",
+                touchAction: "manipulation",
+              }}
+            >
+              <div className="dazro-product-price">
+                ৳ {Number(product.price || 0).toLocaleString()}
+              </div>
+
+              {Number(product.oldPrice || 0) > 0 && (
+                <div className="dazro-product-old-price">
+                  ৳ {Number(product.oldPrice).toLocaleString()}
+                </div>
+              )}
+            </button>
+
+            {/* Stock */}
+            {outOfStock ? (
+              <div className="dazro-product-stock-out">
+                Out of stock
+              </div>
+            ) : (
+              <div className="dazro-product-stock">
+                {stock} available
+              </div>
+            )}
+
+            {/* Add to Cart */}
+            <button
+              type="button"
+              className="btn dazro-add-cart-btn"
+              onClick={(event) => {
+                event.stopPropagation();
+                onAddToCart(product);
+              }}
+              disabled={outOfStock || isAdding}
+            >
+              {outOfStock ? (
+                "Out of Stock"
+              ) : isAdding ? (
+                <>
+                  <span
+                    className="spinner-border spinner-border-sm me-1"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                  <span>Adding...</span>
+                </>
+              ) : (
+                <>
+                  <span>Add to Cart</span>
+                  <span className="dazro-cart-arrow">→</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+);
+
+ProductCard.displayName = "ProductCard";
+
 export default Products;

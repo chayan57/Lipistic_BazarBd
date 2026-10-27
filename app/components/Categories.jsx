@@ -9,22 +9,22 @@ function Categories() {
     {
       title: "Watches",
       icon: <WatchIcon />,
-      href: "/category/watches",
+      href: "/products",
     },
     {
       title: "Gadgets",
       icon: <HeadphonesIcon />,
-      href: "/category/gadgets",
+      href: "/products",
     },
     {
       title: "Fashion",
       icon: <CheckroomIcon />,
-      href: "/category/fashion",
+      href: "/products",
     },
     {
       title: "Lifestyle",
       icon: <HomeOutlinedIcon />,
-      href: "/category/lifestyle",
+      href: "/products",
     },
   ];
 

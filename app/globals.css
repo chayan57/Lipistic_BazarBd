@@ -3357,3 +3357,386 @@ padding-top: 8px !important;
   font-size: 12px;
   color: #777;
 }
+
+
+.dazro-qv-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(15, 15, 20, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(5px);
+}
+
+.dazro-qv-modal {
+  position: relative;
+  width: 100%;
+  max-width: 1050px;
+  max-height: 92dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: #fff;
+  border-radius: 18px;
+  padding: 32px;
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.25);
+}
+
+.dazro-qv-close {
+  position: sticky;
+  top: 0;
+  float: right;
+  z-index: 10;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 50%;
+  background: #fff2f8;
+  color: #d21165;
+  font-size: 27px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.dazro-qv-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 35px;
+  clear: both;
+}
+
+.dazro-qv-main-image {
+  position: relative;
+  height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff2f8;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.dazro-qv-main-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 18px;
+}
+
+.dazro-qv-discount {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  padding: 6px 12px;
+  background: #d21165;
+  color: white;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.dazro-qv-thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.dazro-qv-thumbnails button {
+  width: 70px;
+  height: 70px;
+  padding: 5px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.dazro-qv-thumbnails button.active {
+  border: 2px solid #d21165;
+}
+
+.dazro-qv-thumbnails img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.dazro-qv-brand {
+  color: #d21165;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.dazro-qv-info h2 {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 10px 0;
+  color: #222;
+}
+
+.dazro-qv-rating {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #f5a623;
+}
+
+.dazro-qv-rating small {
+  color: #777;
+}
+
+.dazro-qv-price {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 20px 0;
+}
+
+.dazro-qv-price strong {
+  color: #d21165;
+  font-size: 29px;
+}
+
+.dazro-qv-price del {
+  color: #999;
+  font-size: 17px;
+}
+
+.dazro-qv-short {
+  color: #666;
+  line-height: 1.8;
+}
+
+.dazro-qv-stock {
+  margin: 18px 0;
+  font-weight: 600;
+  color: #16803b;
+}
+
+.dazro-qv-stock .out {
+  color: #dc3545;
+}
+
+.dazro-qv-quantity {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 9px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.dazro-qv-quantity button {
+  width: 43px;
+  height: 43px;
+  border: none;
+  background: #fff2f8;
+  color: #d21165;
+  font-size: 23px;
+  cursor: pointer;
+}
+
+.dazro-qv-quantity button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.dazro-qv-quantity span {
+  min-width: 45px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.dazro-qv-cart {
+  display: block;
+  width: 100%;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 9px;
+  background: #d21165;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.dazro-qv-cart:hover:not(:disabled) {
+  background: #ae0c51;
+}
+
+.dazro-qv-cart:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dazro-qv-meta {
+  margin: 12px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.dazro-qv-section {
+  margin-top: 35px;
+  padding-top: 25px;
+  border-top: 1px solid #eee;
+}
+
+.dazro-qv-section h3 {
+  font-size: 21px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+.dazro-qv-description {
+  line-height: 1.8;
+  color: #555;
+  overflow-wrap: anywhere;
+}
+
+.dazro-qv-description img {
+  max-width: 100%;
+  height: auto;
+}
+
+.dazro-qv-review {
+  border-bottom: 1px solid #eee;
+  padding: 15px 0;
+}
+
+.dazro-qv-review p {
+  margin: 8px 0 0;
+  color: #555;
+}
+
+@media (max-width: 767px) {
+  .dazro-qv-overlay {
+    padding: 8px;
+    align-items: center;
+  }
+
+  .dazro-qv-modal {
+    max-height: 96dvh;
+    padding: 16px;
+    border-radius: 13px;
+  }
+
+  .dazro-qv-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .dazro-qv-main-image {
+    height: 290px;
+  }
+
+  .dazro-qv-thumbnails button {
+    width: 58px;
+    height: 58px;
+  }
+
+  .dazro-qv-info h2 {
+    font-size: 21px;
+  }
+
+  .dazro-qv-price strong {
+    font-size: 25px;
+  }
+
+  .dazro-qv-section {
+    margin-top: 25px;
+  }
+}
+
+@media (max-width: 380px) {
+  .dazro-qv-main-image {
+    height: 230px;
+  }
+}
+
+@media (max-width: 767px) {
+  .dazro-qv-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dazro-qv-modal {
+    width: 100%;
+    max-width: 100%;
+    max-height: 95dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 15px;
+    border-radius: 14px;
+  }
+
+  .dazro-qv-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .dazro-qv-main-image {
+    height: 260px;
+  }
+
+  .dazro-qv-thumbnails button {
+    width: 55px;
+    height: 55px;
+  }
+
+  .dazro-qv-info h2 {
+    font-size: 20px;
+  }
+
+  .dazro-qv-cart {
+    width: 100%;
+  }
+}
+@media (max-width: 767px) {
+  .dazro-qv-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 999999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 8px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .dazro-qv-modal {
+    position: relative;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 95dvh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 14px;
+    padding: 15px;
+  }
+
+  .dazro-qv-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 20px;
+  }
+
+  .dazro-qv-main-image {
+    height: 260px !important;
+  }
+
+  .dazro-qv-close {
+    z-index: 20;
+  }
+}
