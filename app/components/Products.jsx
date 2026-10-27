@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, {
@@ -11,9 +12,7 @@ import Image from "next/image";
 import { createPortal } from "react-dom";
 import { useDispatch } from "react-redux";
 import { setCart } from "./store/cartSlice";
-
 import ProductQuickView from "./ProductQuickView";
-
 
 function Products() {
   const dispatch = useDispatch();
@@ -24,7 +23,6 @@ function Products() {
   const [addingId, setAddingId] = useState(null);
   const [reviewSummaries, setReviewSummaries] = useState({});
 
-  // Quick View
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -196,12 +194,11 @@ function Products() {
     [dispatch]
   );
 
-  // Open Quick View
+  // Quick View
   const openQuickView = useCallback((product) => {
     setQuickViewProduct(product);
   }, []);
 
-  // Close Quick View
   const closeQuickView = useCallback(() => {
     setQuickViewProduct(null);
   }, []);
@@ -221,8 +218,9 @@ function Products() {
 
   return (
     <main className="dazro-products-page">
-      <div className="container py-5">
-        <div className="mb-4">
+      <div className="container py-3 py-md-5">
+        {/* Page Heading */}
+        <div className="mb-3 mb-md-4">
           <h1 className="dazro-products-title">
             Our Products
           </h1>
@@ -244,7 +242,8 @@ function Products() {
           </div>
         )}
 
-        <div className="row g-4">
+        {/* Responsive Product Grid */}
+        <div className="row g-2 g-md-3 g-lg-4">
           {products.map((product, index) => (
             <ProductCard
               key={product._id}
@@ -264,7 +263,7 @@ function Products() {
         </div>
       </div>
 
-      {/* Mobile and Desktop Quick View Popup */}
+      {/* Mobile and Desktop Quick View */}
       {isMounted &&
         quickViewProduct &&
         createPortal(
@@ -313,8 +312,8 @@ const ProductCard = React.memo(
     };
 
     return (
-      <div className="col-12 col-sm-6 col-lg-4 col-xl-3">
-        <div className="dazro-product-card">
+      <div className="col-6 col-md-4 col-xl-3">
+        <div className="dazro-product-card h-100">
           {/* Product Image */}
           <button
             type="button"
@@ -335,8 +334,10 @@ const ProductCard = React.memo(
                     className="dazro-product-image"
                     width={400}
                     height={400}
+                    sizes="(max-width: 767px) 50vw, (max-width: 1199px) 33vw, 25vw"
                     priority={index < 4}
                   />
+
                   <span className="dazro-product-shine" />
                 </>
               ) : (
@@ -348,14 +349,15 @@ const ProductCard = React.memo(
           </button>
 
           {/* Product Information */}
-          <div className="p-3">
+          <div className="dazro-product-card-info p-3">
+            {/* Brand */}
             {product.brand && (
               <small className="dazro-product-brand">
                 {product.brand}
               </small>
             )}
 
-            {/* Review Summary */}
+            {/* Reviews */}
             {reviewCount > 0 && (
               <div className="dazro-product-review-summary">
                 <span

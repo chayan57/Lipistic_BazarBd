@@ -1,5 +1,7 @@
+
 import Image from "next/image";
 import Link from "next/link";
+
 import Features from "../components/Features";
 import Categories from "../components/Categories";
 import FeaturedProducts from "../components/FeaturedProducts";
@@ -7,102 +9,79 @@ import SpecialOffer from "../components/SpecialOffer";
 import WhyChoose from "../components/WhyChoose";
 import Reviews from "../components/Reviews";
 import CTA from "../components/CTA";
+
 export default function Home() {
   return (
     <main style={{ backgroundColor: "#FFF2F8" }}>
       {/* Hero Section */}
       <section
-      className="pt-3"
-  style={{
-    background:
-      "linear-gradient(to bottom, #D21165 0%, #D21165 65%, #FFF2F8 100%)",
-    minHeight: "520px",
-    display: "flex",
-    alignItems: "center",
-  }}
->
+        className="dazro-hero"
+        style={{
+          background:
+            "linear-gradient(180deg, #D21165 0%, #D21165 70%, #FFF2F8 100%)",
+        }}
+      >
         <div className="container">
-          <div className="row align-items-center gy-5">
+          <div className="row align-items-center g-3 g-lg-4">
 
-            {/* Left Side */}
+            {/* Left Content */}
             <div className="col-12 col-lg-6 text-center text-lg-start">
-              <h5
-                className="mb-3 fw-semibold"
-                style={{ color: "#FFD6E7" }}
-              >
-                Welcome to DazroShop
-              </h5>
+              <div className="dazro-hero-content">
+                <p className="dazro-hero-label fw-semibold mb-2">
+                  Welcome to DazroShop
+                </p>
 
-              <h1
-                className="display-4 fw-bold text-white mb-3"
-                style={{ lineHeight: "1.15" }}
-              >
-                Shop Everything
-                <br />
-                You Love
-              </h1>
+                <h1 className="dazro-hero-title fw-bold text-white mb-3">
+                  Shop Everything
+                  <br className="d-none d-sm-block" />
+                  {" "}You Love
+                </h1>
 
-              <p
-                className="text-white mb-4"
-                style={{
-                  fontSize: "17px",
-                  lineHeight: "1.7",
-                  maxWidth: "520px",
-                }}
-              >
-                Discover quality products, great deals, and everyday
-                essentials—all in one place.
-              </p>
+                <p className="dazro-hero-description text-white mb-3">
+                  Discover quality products, great deals, and
+                  everyday essentials—all in one place.
+                </p>
 
-              <Link
-                href="/products"
-                className="btn btn-light fw-semibold px-4 py-3"
-                style={{
-                  color: "#D21165",
-                  borderRadius: "8px",
-                }}
-              >
-                Shop Now
-              </Link>
+                <Link
+                  href="/products"
+                  className="btn btn-light fw-semibold dazro-hero-btn"
+                >
+                  Shop Now
+                </Link>
+              </div>
             </div>
 
-            {/* Right Side */}
-       <div className="col-12 col-lg-6">
-  <div
-    className="position-relative w-100 mx-auto overflow-hidden pt-5"
-    style={{
-      maxWidth: "650px",
-      aspectRatio: "1 / 1",
-      borderRadius: "30px",
-    }}
-  >
-    <Image
-  src="/hero-baner.png"
-  alt="DazroShop online shopping products in Bangladesh"
-  priority
-  width={600}
-  height={500}
-  style={{
-    width: "100%",
-    maxWidth: "660px",
-    height: "430px",
-    objectFit: "cover",
-    borderRadius: "30px",
-  }}
-/>
-  </div>
-</div>
+            {/* Right Image */}
+            <div className="col-12 col-lg-6">
+              <div className="dazro-hero-image mx-auto">
+                <Image
+                  src="/hero-baner.png"
+                  alt="DazroShop online shopping products in Bangladesh"
+                  width={600}
+                  height={500}
+                  priority
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="img-fluid"
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    objectFit: "contain",
+                  }}
+                />
+              </div>
+            </div>
 
           </div>
         </div>
       </section>
-      <Categories/>
-      <FeaturedProducts/>
-      <SpecialOffer/>
-      <Features/>
-      <Reviews/>
-     <WhyChoose/>
-     <CTA/>
+
+      <Categories />
+      <FeaturedProducts />
+      <SpecialOffer />
+      <Features />
+      <Reviews />
+      <WhyChoose />
+      <CTA />
     </main>
   );
 }
