@@ -3855,7 +3855,7 @@ padding-top: 8px !important;
 /* Tablet */
 @media (max-width: 991px) {
   .dazro-hero {
-    padding: 35px 0 40px;
+    padding: 0px 0 0px;
   }
 
   .dazro-hero-description {
