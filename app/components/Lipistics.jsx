@@ -6,18 +6,18 @@ import Image from "next/image";
 
 const products = [
   {
-    id: 1,
-    name: "Classic Matte Lipstick",
+    id: "lipstick-1",
+    name: "Makup Rich Lipstick Set",
     description: "Long-lasting rich color with a smooth matte finish.",
-    price: 450,
+    price: 500,
     oldPrice: 650,
     image: "/lipistic.png",
     badge: "Best Seller",
   },
   {
-    id: 2,
-    name: "Luxury Velvet Lipstick",
-    description: "Soft, creamy texture for a beautiful everyday look.",
+    id: "lipstick-2",
+    name: "Luxury Lipstick Set",
+    description: "Soft creamy texture for a beautiful everyday look.",
     price: 550,
     oldPrice: 750,
     image: "/good-lipistic.png",

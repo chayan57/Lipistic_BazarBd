@@ -118,26 +118,17 @@ function SpecialOffer() {
 
                 {/* Image */}
                 <div className="col-12 col-lg-6">
-                  <div
-                    className="position-relative overflow-hidden special-offer-image"
-                    style={{
-                      width: "100%",
-                      height: "380px",
-                    }}
-                  >
-                    <Image
-                      src={offer.image}
-                      alt={`${offer.title} - DazroShop`}
-                      fill
-                      sizes="(max-width: 991px) 100vw, 50vw"
-                      style={{
-                        objectFit: "cover",
-                      }}
-                    />
-
-                    <span className="special-offer-shine"></span>
-                  </div>
-                </div>
+  <div className="position-relative overflow-hidden special-offer-image">
+    <Image
+      src={offer.image}
+      alt={`${offer.title} - DazroShop`}
+      fill
+      sizes="(max-width: 991px) 100vw, 50vw"
+      style={{ objectFit: "cover" }}
+    />
+    <span className="special-offer-shine"></span>
+  </div>
+</div>
               </div>
             </SwiperSlide>
           ))}

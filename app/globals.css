@@ -4609,3 +4609,32 @@ padding-top: 8px !important;
     width: 100%;
   }
 }
+.special-offer-image {
+  width: 100%;
+  height: 380px;
+}
+
+@media (max-width: 991px) {
+  .special-offer-image {
+    height: 200px;
+  }
+}
+
+@media (max-width: 575px) {
+  .special-offer-image {
+    height: 200px;
+  }
+
+  .special-offer-slider h2 {
+    font-size: 18px !important;
+  }
+
+  .special-offer-slider p {
+    font-size: 14px !important;
+  }
+
+  .special-offer-slider .btn {
+    padding: 10px 20px !important;
+    font-size: 14px;
+  }
+}

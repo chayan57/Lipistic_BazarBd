@@ -110,6 +110,8 @@ export default function Navbar() {
               component={Link}
               href="/"
               sx={navButtonStyle(pathname === "/")}
+              style={{fontSize:"18px"}}
+              className="text-black"
             >
               Home
             </Button>
@@ -120,6 +122,8 @@ export default function Navbar() {
               sx={navButtonStyle(
                 pathname.startsWith("/products")
               )}
+              style={{fontSize:"18px"}}
+              className="text-black "
             >
               Products
             </Button>

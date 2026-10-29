@@ -41,7 +41,7 @@ function Footer() {
               }}
             >
               Discover quality products and enjoy a simple online
-              shopping experience with DazroShop.
+              shopping experience with Lipistic Bazar Bd.
             </p>
           </div>
 

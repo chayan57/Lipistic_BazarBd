@@ -28,7 +28,7 @@ export default function Home() {
             <div className="col-12 col-lg-6 text-center text-lg-start">
               <div className="dazro-hero-content">
                 <p className="dazro-hero-label fw-semibold mb-2">
-                  Welcome to DazroShop
+                  Welcome to Lipistic Bazar Bd
                 </p>
 
                 <h1 className="dazro-hero-title fw-bold text-white mb-3">
