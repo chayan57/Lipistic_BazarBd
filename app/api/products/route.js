@@ -1,5 +1,5 @@
 import Product from "@/models/Product";
-import Category from "@/models/Category";
+
 import dbConnect from "@/lib/connectDB";
 
 export async function GET(request) {

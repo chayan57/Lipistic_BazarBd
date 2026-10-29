@@ -3864,14 +3864,15 @@ padding-top: 8px !important;
   }
 
   .dazro-hero-image {
-    max-width: 380px;
+    max-width: 550px;
+    background-size: cover;
   }
 }
 
 /* Mobile */
 @media (max-width: 575px) {
   .dazro-hero {
-    padding: 25px 0 30px;
+    padding: 0px 0 0px;
   }
 
   .dazro-hero-label {
@@ -3881,14 +3882,14 @@ padding-top: 8px !important;
   .dazro-hero-title {
     font-size: 30px;
     line-height: 1.2;
-    margin-bottom: 10px !important;
+  
   }
 
   .dazro-hero-description {
     font-size: 13px;
     line-height: 1.6;
     max-width: 320px;
-    margin-bottom: 14px !important;
+    
   }
 
   .dazro-hero-btn {
@@ -3897,7 +3898,8 @@ padding-top: 8px !important;
   }
 
   .dazro-hero-image {
-    max-width: 290px;
+    max-width: 390px;
+    background-size: cover;
   }
 }
 

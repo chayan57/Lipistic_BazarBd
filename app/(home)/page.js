@@ -55,16 +55,15 @@ export default function Home() {
             <div className="col-12 col-lg-6">
               <div className="dazro-hero-image mx-auto">
                 <Image
-                  src="/hero-baner.png"
+                  src="/lipistic.png"
                   alt="DazroShop online shopping products in Bangladesh"
                   width={600}
                   height={500}
                   priority
                   sizes="(max-width: 768px) 100vw, 50vw"
-                  className="img-fluid"
+                  className="img-fluid rounded-2"
                   style={{
-                    width: "100%",
-                    height: "auto",
+                   
                     objectFit: "contain",
                   }}
                 />
