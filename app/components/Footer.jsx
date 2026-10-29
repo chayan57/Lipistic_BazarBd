@@ -45,50 +45,7 @@ function Footer() {
             </p>
           </div>
 
-          {/* Quick Links */}
-          <div className="col-6 col-md-3 col-lg-2">
-            <h2 className="h6 fw-bold mb-3">
-              Quick Links
-            </h2>
-
-            <ul className="list-unstyled mb-0">
-              <li className="mb-2">
-                <Link
-                  href="/"
-                  className="text-decoration-none footer-link"
-                >
-                  Home
-                </Link>
-              </li>
-
-              <li className="mb-2">
-                <Link
-                  href="/products"
-                  className="text-decoration-none footer-link"
-                >
-                  Products
-                </Link>
-              </li>
-
-              <li className="mb-2">
-                <Link
-                  href="/cart"
-                  className="text-decoration-none footer-link"
-                >
-                  Cart
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  href="/login"
-                  className="text-decoration-none footer-link"
-                >
-                  Login
-                </Link>
-              </li>
-            </ul>
-          </div>
+          
 
           {/* Support */}
           <div className="col-6 col-md-3 col-lg-3">
@@ -106,32 +63,7 @@ function Footer() {
                 </Link>
               </li>
 
-              <li className="mb-2">
-                <Link
-                  href="/shipping-policy"
-                  className="text-decoration-none footer-link"
-                >
-                  Shipping Policy
-                </Link>
-              </li>
-
-              <li className="mb-2">
-                <Link
-                  href="/return-policy"
-                  className="text-decoration-none footer-link"
-                >
-                  Return Policy
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  href="/privacy-policy"
-                  className="text-decoration-none footer-link"
-                >
-                  Privacy Policy
-                </Link>
-              </li>
+              
             </ul>
           </div>
 

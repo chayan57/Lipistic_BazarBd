@@ -124,15 +124,7 @@ export default function Navbar() {
               Products
             </Button>
 
-            <Button
-              component={Link}
-              href="/cart"
-              sx={navButtonStyle(
-                pathname.startsWith("/cart")
-              )}
-            >
-              Cart
-            </Button>
+           
           </div>
         </div>
       </nav>

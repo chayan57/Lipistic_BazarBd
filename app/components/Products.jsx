@@ -1,478 +1,330 @@
 
 "use client";
 
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useRef,
-} from "react";
-
+import { useState } from "react";
 import Image from "next/image";
-import { createPortal } from "react-dom";
-import { useDispatch } from "react-redux";
-import { setCart } from "./store/cartSlice";
-import ProductQuickView from "./ProductQuickView";
 
-function Products() {
-  const dispatch = useDispatch();
+const products = [
+  {
+    id: "lipstick-1",
+    name: "Classic Matte Lipstick",
+    description: "Long-lasting rich color with a smooth matte finish.",
+    price: 450,
+    oldPrice: 650,
+    image: "/lipistic.png",
+    badge: "Best Seller",
+  },
+  {
+    id: "lipstick-2",
+    name: "Luxury Velvet Lipstick",
+    description: "Soft creamy texture for a beautiful everyday look.",
+    price: 550,
+    oldPrice: 750,
+    image: "/good-lipistic.png",
+    badge: "New Arrival",
+  },
+];
 
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+const initialForm = {
+  name: "",
+  phone: "",
+  address: "",
+  quantity: 1,
+};
+
+export default function Products() {
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [form, setForm] = useState(initialForm);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [addingId, setAddingId] = useState(null);
-  const [reviewSummaries, setReviewSummaries] = useState({});
 
-  const [quickViewProduct, setQuickViewProduct] = useState(null);
-  const [isMounted, setIsMounted] = useState(false);
+  const openOrder = (product) => {
+    setSelectedProduct(product);
+    setForm(initialForm);
+    setMessage("");
+    setError("");
+  };
 
-  const isAddingRef = useRef(false);
+  const closeOrder = () => {
+    if (loading) return;
+    setSelectedProduct(null);
+  };
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-  // Fetch Products
-  useEffect(() => {
-    const controller = new AbortController();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        setError("");
+    if (!selectedProduct || loading) return;
 
-        const response = await fetch("/api/products", {
-          method: "GET",
-          signal: controller.signal,
-          cache: "no-store",
-        });
+    setLoading(true);
+    setError("");
 
-        const data = await response.json();
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          productId: selectedProduct.id,
+          name: form.name.trim(),
+          phone: form.phone.trim(),
+          address: form.address.trim(),
+          quantity: Number(form.quantity),
+        }),
+      });
 
-        if (!response.ok || !data.success) {
-          throw new Error(
-            data.message || "Failed to fetch products."
-          );
-        }
+      const data = await response.json();
 
-        setProducts(
-          Array.isArray(data.products) ? data.products : []
-        );
-      } catch (err) {
-        if (err.name === "AbortError") return;
-
-        console.error("Products error:", err);
-        setError(err.message || "Failed to load products.");
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoading(false);
-        }
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Order failed");
       }
-    };
 
-    fetchProducts();
-
-    return () => controller.abort();
-  }, []);
-
-  // Fetch Review Summaries
-  useEffect(() => {
-    if (!products.length) {
-      setReviewSummaries({});
-      return;
+      setMessage("Your order has been placed successfully!");
+      setForm(initialForm);
+    } catch (err) {
+      setError(err.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
     }
-
-    const controller = new AbortController();
-
-    const fetchReviewSummaries = async () => {
-      try {
-        const results = await Promise.all(
-          products.map(async (product) => {
-            try {
-              const response = await fetch(
-                `/api/reviews?productId=${encodeURIComponent(
-                  product._id
-                )}`,
-                {
-                  method: "GET",
-                  signal: controller.signal,
-                  cache: "no-store",
-                }
-              );
-
-              const data = await response.json();
-
-              return {
-                productId: product._id,
-                averageRating:
-                  response.ok && data.success
-                    ? Number(data.summary?.averageRating || 0)
-                    : 0,
-                reviewCount:
-                  response.ok && data.success
-                    ? Number(data.summary?.reviewCount || 0)
-                    : 0,
-              };
-            } catch (err) {
-              if (err.name === "AbortError") throw err;
-
-              console.error("Review summary error:", err);
-
-              return {
-                productId: product._id,
-                averageRating: 0,
-                reviewCount: 0,
-              };
-            }
-          })
-        );
-
-        if (controller.signal.aborted) return;
-
-        const summaryMap = {};
-
-        results.forEach((item) => {
-          summaryMap[item.productId] = {
-            averageRating: item.averageRating,
-            reviewCount: item.reviewCount,
-          };
-        });
-
-        setReviewSummaries(summaryMap);
-      } catch (err) {
-        if (err.name !== "AbortError") {
-          console.error("Review summaries error:", err);
-        }
-      }
-    };
-
-    fetchReviewSummaries();
-
-    return () => controller.abort();
-  }, [products]);
-
-  // Add to Cart
-  const handleAddToCart = useCallback(
-    async (product) => {
-      const stock = Number(product.stock || 0);
-
-      if (stock <= 0 || isAddingRef.current) return;
-
-      try {
-        isAddingRef.current = true;
-        setAddingId(product._id);
-        setError("");
-
-        const response = await fetch("/api/cart", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            productId: product._id,
-            quantity: 1,
-          }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok || !data.success) {
-          throw new Error(
-            data.message || "Failed to add product to cart."
-          );
-        }
-
-        dispatch(setCart(data.cart?.items || []));
-      } catch (err) {
-        console.error("Add to cart error:", err);
-        setError(err.message || "Failed to add product to cart.");
-      } finally {
-        isAddingRef.current = false;
-        setAddingId(null);
-      }
-    },
-    [dispatch]
-  );
-
-  // Quick View
-  const openQuickView = useCallback((product) => {
-    setQuickViewProduct(product);
-  }, []);
-
-  const closeQuickView = useCallback(() => {
-    setQuickViewProduct(null);
-  }, []);
-
-  if (loading && products.length === 0) {
-    return (
-      <main className="dazro-products-page">
-        <div className="container py-5 text-center">
-          <div className="spinner-border" role="status" />
-          <p className="mt-3 mb-0 text-muted">
-            Loading products...
-          </p>
-        </div>
-      </main>
-    );
-  }
+  };
 
   return (
-    <main className="dazro-products-page">
-      <div className="container py-3 py-md-5">
-        {/* Page Heading */}
-        <div className="mb-3 mb-md-4">
-          <h1 className="dazro-products-title">
-            Our Products
+    <section className="lipstick-products-section py-5">
+      <div className="container">
+        <div className="text-center mb-5">
+          <span className="lipstick-section-label">
+            BEAUTY COLLECTION
+          </span>
+          <h1 className="lipstick-section-title mt-2">
+            Find Your Perfect Shade
           </h1>
-
-          <p className="dazro-products-subtitle">
-            Discover our latest products.
+          <p className="text-muted">
+            Discover our exclusive lipstick collection.
           </p>
         </div>
 
-        {error && (
-          <div className="alert alert-danger" role="alert">
-            {error}
-          </div>
-        )}
+        <div className="row g-3 g-md-4 justify-content-center">
+          {products.map((product) => (
+            <div
+              className="col-6 col-md-5 col-lg-4"
+              key={product.id}
+            >
+              <article className="lipstick-product-card h-100">
+                <div className="lipstick-image-wrap">
+                  <span className="lipstick-product-badge">
+                    {product.badge}
+                  </span>
 
-        {!error && products.length === 0 && (
-          <div className="text-center py-5">
-            <h5>No products available.</h5>
-          </div>
-        )}
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    sizes="(max-width: 767px) 50vw, 33vw"
+                    className="lipstick-product-image"
+                  />
+                </div>
 
-        {/* Responsive Product Grid */}
-        <div className="row g-2 g-md-3 g-lg-4">
-          {products.map((product, index) => (
-            <ProductCard
-              key={product._id}
-              product={product}
-              index={index}
-              isAdding={addingId === product._id}
-              onAddToCart={handleAddToCart}
-              onQuickView={openQuickView}
-              reviewSummary={
-                reviewSummaries[product._id] || {
-                  averageRating: 0,
-                  reviewCount: 0,
-                }
-              }
-            />
+                <div className="lipstick-product-info">
+                  <small className="lipstick-product-brand">
+                    Lipistic Bazar
+                  </small>
+
+                  <h2 className="lipstick-product-name">
+                    {product.name}
+                  </h2>
+
+                  <p className="lipstick-product-description">
+                    {product.description}
+                  </p>
+
+                  <div className="lipstick-price-row mb-3">
+                    <span className="lipstick-current-price text-black">
+                      Tk{product.price}
+                    </span>
+                    <del className="lipstick-old-price">
+                      Tk{product.oldPrice}
+                    </del>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="lipstick-add-cart-btn"
+                    onClick={() => openOrder(product)}
+                  >
+                    Order Now <span>→</span>
+                  </button>
+                </div>
+              </article>
+            </div>
           ))}
         </div>
       </div>
 
-      {/* Mobile and Desktop Quick View */}
-      {isMounted &&
-        quickViewProduct &&
-        createPortal(
-          <ProductQuickView
-            product={quickViewProduct}
-            onClose={closeQuickView}
-          />,
-          document.body
-        )}
-    </main>
-  );
-}
-
-// Product Card
-const ProductCard = React.memo(
-  ({
-    product,
-    index,
-    isAdding,
-    onAddToCart,
-    onQuickView,
-    reviewSummary,
-  }) => {
-    const firstImage = product.images?.[0];
-
-    const image =
-      typeof firstImage === "string"
-        ? firstImage
-        : firstImage?.url || product.image || "";
-
-    const stock = Number(product.stock || 0);
-    const outOfStock = stock <= 0;
-
-    const averageRating = Number(
-      reviewSummary?.averageRating || 0
-    );
-
-    const reviewCount = Number(
-      reviewSummary?.reviewCount || 0
-    );
-
-    const handleQuickViewClick = (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      onQuickView(product);
-    };
-
-    return (
-      <div className="col-6 col-md-4 col-xl-3">
-        <div className="dazro-product-card h-100">
-          {/* Product Image */}
-          <button
-            type="button"
-            onClick={handleQuickViewClick}
-            className="border-0 bg-transparent p-0 w-100 text-start"
-            style={{
-              cursor: "pointer",
-              touchAction: "manipulation",
-            }}
-            aria-label={`Quick view ${product.name}`}
+      {selectedProduct && (
+        <div
+          className="lipstick-modal-overlay"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) closeOrder();
+          }}
+        >
+          <div
+            className="lipstick-order-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="order-title"
           >
-            <div className="dazro-product-image-wrap">
-              {image ? (
-                <>
-                  <Image
-                    src={image}
-                    alt={product.name}
-                    className="dazro-product-image"
-                    width={400}
-                    height={400}
-                    sizes="(max-width: 767px) 50vw, (max-width: 1199px) 33vw, 25vw"
-                    priority={index < 4}
-                  />
-
-                  <span className="dazro-product-shine" />
-                </>
-              ) : (
-                <div className="dazro-product-no-image">
-                  No Image
-                </div>
-              )}
-            </div>
-          </button>
-
-          {/* Product Information */}
-          <div className="dazro-product-card-info p-3">
-            {/* Brand */}
-            {product.brand && (
-              <small className="dazro-product-brand">
-                {product.brand}
-              </small>
-            )}
-
-            {/* Reviews */}
-            {reviewCount > 0 && (
-              <div className="dazro-product-review-summary">
-                <span
-                  className="dazro-product-review-stars"
-                  aria-label={`${averageRating.toFixed(
-                    1
-                  )} out of 5 stars from ${reviewCount} reviews`}
-                >
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <span
-                      key={star}
-                      className={
-                        star <= Math.round(averageRating)
-                          ? "active"
-                          : ""
-                      }
-                      aria-hidden="true"
-                    >
-                      ★
-                    </span>
-                  ))}
-                </span>
-
-                <span className="dazro-product-review-rating">
-                  {averageRating.toFixed(1)}
-                </span>
-
-                <span className="dazro-product-review-count">
-                  ({reviewCount})
-                </span>
-              </div>
-            )}
-
-            {/* Product Name */}
-            <button
-              type="button"
-              onClick={handleQuickViewClick}
-              className="border-0 bg-transparent p-0 text-start w-100"
-              style={{
-                cursor: "pointer",
-                touchAction: "manipulation",
-              }}
-            >
-              <h3 className="dazro-product-name">
-                {product.name}
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h3 id="order-title" className="m-0">
+                Place Your Order
               </h3>
-            </button>
+              <button
+                type="button"
+                className="btn-close"
+                onClick={closeOrder}
+                disabled={loading}
+                aria-label="Close"
+              />
+            </div>
 
-            {/* Product Price */}
-            <button
-              type="button"
-              onClick={handleQuickViewClick}
-              className="border-0 bg-transparent p-0 text-start w-100"
-              style={{
-                cursor: "pointer",
-                touchAction: "manipulation",
-              }}
-            >
-              <div className="dazro-product-price">
-                ৳ {Number(product.price || 0).toLocaleString()}
-              </div>
-
-              {Number(product.oldPrice || 0) > 0 && (
-                <div className="dazro-product-old-price">
-                  ৳ {Number(product.oldPrice).toLocaleString()}
-                </div>
-              )}
-            </button>
-
-            {/* Stock */}
-            {outOfStock ? (
-              <div className="dazro-product-stock-out">
-                Out of stock
+            {message ? (
+              <div className="text-center py-4">
+                <div className="text-success fs-1">✓</div>
+                <h4>Order Confirmed!</h4>
+                <p>{message}</p>
+                <button
+                  className="lipstick-add-cart-btn"
+                  onClick={closeOrder}
+                >
+                  Done
+                </button>
               </div>
             ) : (
-              <div className="dazro-product-stock">
-                {stock} available
-              </div>
-            )}
-
-            {/* Add to Cart */}
-            <button
-              type="button"
-              className="btn dazro-add-cart-btn"
-              onClick={(event) => {
-                event.stopPropagation();
-                onAddToCart(product);
-              }}
-              disabled={outOfStock || isAdding}
-            >
-              {outOfStock ? (
-                "Out of Stock"
-              ) : isAdding ? (
-                <>
-                  <span
-                    className="spinner-border spinner-border-sm me-1"
-                    role="status"
-                    aria-hidden="true"
+              <form onSubmit={handleSubmit}>
+                <div className="lipstick-order-product mb-3">
+                  <Image
+                    src={selectedProduct.image}
+                    width={65}
+                    height={65}
+                    alt={selectedProduct.name}
+                    style={{ objectFit: "contain" }}
                   />
-                  <span>Adding...</span>
-                </>
-              ) : (
-                <>
-                  <span>Add to Cart</span>
-                  <span className="dazro-cart-arrow">→</span>
-                </>
-              )}
-            </button>
+                  <div>
+                    <strong>{selectedProduct.name}</strong>
+                    <div className="text-danger fw-bold">
+                      Tk{selectedProduct.price}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="order-name" className="form-label">
+                    Full Name *
+                  </label>
+                  <input
+                    id="order-name"
+                    type="text"
+                    name="name"
+                    className="form-control"
+                    placeholder="Enter your full name"
+                    value={form.name}
+                    onChange={handleChange}
+                    maxLength={100}
+                    required
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="order-phone" className="form-label">
+                    Phone Number *
+                  </label>
+                  <input
+                    id="order-phone"
+                    type="tel"
+                    name="phone"
+                    className="form-control"
+                    placeholder="01XXXXXXXXX"
+                    pattern="01[0-9]{9}"
+                    title="Enter a valid 11-digit Bangladeshi number"
+                    value={form.phone}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="order-address" className="form-label">
+                    Full Delivery Address *
+                  </label>
+                  <textarea
+                    id="order-address"
+                    name="address"
+                    className="form-control"
+                    rows={3}
+                    placeholder="Village, Road, Area, District"
+                    value={form.address}
+                    onChange={handleChange}
+                    maxLength={500}
+                    required
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="order-quantity" className="form-label">
+                    Quantity
+                  </label>
+                  <input
+                    id="order-quantity"
+                    type="number"
+                    name="quantity"
+                    min="1"
+                    max="20"
+                    className="form-control"
+                    value={form.quantity}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="lipstick-order-total">
+                  <span>Total Price</span>
+                  <strong>
+                    Tk{selectedProduct.price *
+                      (Number(form.quantity) || 0)}
+                  </strong>
+                </div>
+
+                <p className="text-muted small mt-2">
+                  Delivery charge is not included.
+                  Payment: Cash on Delivery.
+                </p>
+
+                {error && (
+                  <div className="alert alert-danger">
+                    {error}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  className="lipstick-add-cart-btn mt-3"
+                  disabled={loading}
+                >
+                  {loading ? "Submitting..." : "Confirm Order"}
+                </button>
+              </form>
+            )}
           </div>
         </div>
-      </div>
-    );
-  }
-);
-
-ProductCard.displayName = "ProductCard";
-
-export default Products;
+      )}
+    </section>
+  );
+}

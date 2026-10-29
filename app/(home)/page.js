@@ -4,11 +4,11 @@ import Link from "next/link";
 
 import Features from "../components/Features";
 import Categories from "../components/Categories";
-import FeaturedProducts from "../components/FeaturedProducts";
 import SpecialOffer from "../components/SpecialOffer";
 import WhyChoose from "../components/WhyChoose";
 import Reviews from "../components/Reviews";
 import CTA from "../components/CTA";
+import Lipistics from "../components/Lipistics";
 
 export default function Home() {
   return (
@@ -75,7 +75,7 @@ export default function Home() {
       </section>
 
       <Categories />
-      <FeaturedProducts />
+      <Lipistics/>
       <SpecialOffer />
       <Features />
       <Reviews />

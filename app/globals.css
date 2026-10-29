@@ -3979,3 +3979,633 @@ padding-top: 8px !important;
   }
 }
 
+
+.lipistics-section {
+  background: #fff7fa;
+}
+
+.lipistics-subtitle {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #d63378;
+}
+
+.lipistics-heading {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  color: #27212a;
+}
+
+.lipistics-description {
+  max-width: 550px;
+  color: #777;
+  line-height: 1.7;
+}
+
+.lipistics-card {
+  background: #fff;
+  border: 1px solid #f4e5eb;
+  border-radius: 18px;
+  overflow: hidden;
+
+}
+
+.lipistics-card:hover {
+ 
+  box-shadow: 0 18px 45px rgba(140, 35, 75, 0.12);
+}
+
+.lipistics-image-wrapper {
+  position: relative;
+  height: 330px;
+  background: #fceaf0;
+  overflow: hidden;
+}
+
+.lipistics-product-image {
+  object-fit: contain;
+  padding: 24px;
+  
+}
+
+
+
+.lipistics-badge {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 2;
+  background: #d63378;
+  color: #fff;
+  padding: 7px 14px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.lipistics-card-content {
+  padding: 26px;
+}
+
+.lipistics-card-content h3 {
+  font-size: 21px;
+  font-weight: 700;
+  color: #2d2530;
+  margin-bottom: 10px;
+}
+
+.lipistics-card-content p {
+  font-size: 14px;
+  color: #777;
+  line-height: 1.6;
+}
+
+.lipistics-price {
+  color: #d63378;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.lipistics-old-price {
+  color: #aaa;
+  font-size: 15px;
+}
+
+.lipistics-cart-btn {
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  background: #d63378;
+  color: #fff;
+  padding: 14px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  
+}
+
+.lipistics-cart-btn:hover {
+  background: #ad1e5a;
+  
+}
+
+@media (max-width: 576px) {
+  .lipistics-image-wrapper {
+    height: 250px;
+  }
+
+  .lipistics-card-content {
+    padding: 20px;
+  }
+
+  .lipistics-card-content h3 {
+    font-size: 19px;
+  }
+}
+
+
+.lipstick-products-section {
+  background: #fff7fa;
+  min-height: 100vh;
+}
+
+.lipstick-section-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #cf2f70;
+}
+
+.lipstick-section-title {
+  font-size: clamp(25px, 4vw, 40px);
+  font-weight: 750;
+  color: #29212a;
+}
+
+.lipstick-section-description {
+  color: #777;
+  font-size: 15px;
+}
+
+.lipstick-product-card {
+  background: #fff;
+  border: 1px solid #f3e5eb;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: 0.3s ease;
+}
+
+.lipstick-product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px rgba(180, 40, 90, 0.12);
+}
+
+.lipstick-image-button,
+.lipstick-name-button {
+  background: none;
+  border: none;
+  padding: 0;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lipstick-image-wrap {
+  height: 290px;
+  position: relative;
+  background: #fceaf1;
+  overflow: hidden;
+}
+
+.lipstick-product-image {
+  object-fit: contain;
+  padding: 20px;
+  transition: transform 0.4s ease;
+}
+
+.lipstick-product-card:hover .lipstick-product-image {
+  transform: scale(1.07);
+}
+
+.lipstick-product-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  background: #d21165;
+  color: white;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.lipstick-product-info {
+  padding: 20px;
+}
+
+.lipstick-product-brand {
+  color: #c9437a;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.lipstick-product-name {
+  font-size: 19px;
+  font-weight: 700;
+  color: #28212a;
+  margin: 8px 0;
+}
+
+.lipstick-product-description {
+  font-size: 13px;
+  color: #777;
+  line-height: 1.6;
+}
+
+.lipstick-price-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.lipstick-current-price {
+  font-size: 23px;
+  font-weight: 700;
+  color: #d21165;
+}
+
+.lipstick-old-price {
+  font-size: 14px;
+  color: #999;
+}
+
+.lipstick-stock {
+  color: #16824a;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 10px 0;
+}
+
+.lipstick-add-cart-btn {
+  width: 100%;
+  border: none;
+  background: #d21165;
+  color: #fff;
+  padding: 12px 15px;
+  border-radius: 9px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  transition: 0.3s ease;
+}
+
+.lipstick-add-cart-btn:hover {
+  background: #a90c50;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 576px) {
+  .lipstick-image-wrap {
+    height: 190px;
+  }
+
+  .lipstick-product-image {
+    padding: 10px;
+  }
+
+  .lipstick-product-info {
+    padding: 12px;
+  }
+
+  .lipstick-product-name {
+    font-size: 15px;
+  }
+
+  .lipstick-product-description {
+    font-size: 12px;
+  }
+
+  .lipstick-current-price {
+    font-size: 18px;
+  }
+
+  .lipstick-old-price {
+    font-size: 12px;
+  }
+
+  .lipstick-add-cart-btn {
+    font-size: 12px;
+    padding: 10px 6px;
+  }
+
+  .lipstick-product-badge {
+    font-size: 9px;
+    padding: 5px 8px;
+  }
+}
+
+
+.lipstick-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 10, 20, 0.65);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  backdrop-filter: blur(5px);
+}
+
+.lipstick-order-modal {
+  background: #fff;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  border-radius: 18px;
+  padding: 26px;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
+}
+
+.lipstick-order-modal h3 {
+  font-size: 23px;
+  font-weight: 700;
+  color: #28212a;
+}
+
+.lipstick-order-product {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: #fff4f8;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.lipstick-order-modal .form-control {
+  border: 1px solid #e5dce1;
+  border-radius: 9px;
+  padding: 11px 13px;
+}
+
+.lipstick-order-modal .form-control:focus {
+  border-color: #d21165;
+  box-shadow: 0 0 0 3px rgba(210, 17, 101, 0.1);
+}
+
+.lipstick-order-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  background: #fff4f8;
+  border-radius: 10px;
+}
+
+.lipstick-order-total strong {
+  color: #d21165;
+  font-size: 22px;
+}
+
+@media (max-width: 576px) {
+  .lipstick-order-modal {
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  .lipstick-order-modal h3 {
+    font-size: 20px;
+  }
+}
+
+
+/* Order Modal Overlay */
+.lipistics-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(25, 10, 20, 0.65);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+
+/* Order Modal */
+.lipistics-order-modal {
+  width: 100%;
+  max-width: 490px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  background: #fff;
+  padding: 28px;
+  border-radius: 20px;
+  box-shadow: 0 25px 65px rgba(0, 0, 0, 0.2);
+}
+
+.lipistics-modal-title {
+  font-size: 23px;
+  font-weight: 700;
+  color: #30202a;
+}
+
+/* Selected Product */
+.lipistics-selected-product {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px;
+  background: #fff2f7;
+  border-radius: 12px;
+}
+
+.lipistics-selected-product h5 {
+  font-size: 16px;
+  font-weight: 650;
+}
+
+/* Inputs */
+.lipistics-order-modal .form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #45343d;
+}
+
+.lipistics-order-modal .form-control {
+  border: 1px solid #eadde3;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 14px;
+}
+
+.lipistics-order-modal .form-control:focus {
+  border-color: #d63378;
+  box-shadow: 0 0 0 3px rgba(214, 51, 120, 0.12);
+}
+
+/* Quantity */
+.lipistics-quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.lipistics-quantity-control button {
+  width: 38px;
+  height: 38px;
+  border: 1px solid #eadde3;
+  border-radius: 8px;
+  background: #fff2f7;
+  color: #d63378;
+  font-size: 21px;
+  cursor: pointer;
+}
+
+.lipistics-quantity-control span {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* Total */
+.lipistics-order-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff2f7;
+  padding: 16px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.lipistics-order-total strong {
+  font-size: 24px;
+  color: #d63378;
+}
+
+/* Success */
+.lipistics-success-icon {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background: #e5f8ed;
+  color: #168447;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 40px;
+  margin: 0 auto;
+}
+
+/* Mobile Responsive */
+@media (max-width: 576px) {
+  .lipistics-order-modal {
+    padding: 20px;
+    border-radius: 15px;
+  }
+
+  .lipistics-modal-title {
+    font-size: 20px;
+  }
+
+  .lipistics-selected-product h5 {
+    font-size: 14px;
+  }
+
+  .lipistics-order-total strong {
+    font-size: 20px;
+  }
+}
+
+
+.contact-main-heading {
+  font-size: clamp(27px, 4vw, 38px);
+  font-weight: 750;
+  color: #30232b;
+}
+
+.contact-method-card {
+  background: #fff;
+  border: 1px solid #f3e0e9;
+  border-radius: 20px;
+  padding: 40px 30px;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 12px 40px rgba(180, 40, 90, 0.06);
+  transition: all 0.3s ease;
+}
+
+.contact-method-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 20px 50px rgba(180, 40, 90, 0.13);
+}
+
+.contact-method-icon {
+  width: 76px;
+  height: 76px;
+  background: #ffedf4;
+  color: #d21165;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.contact-method-card h3 {
+  font-size: 23px;
+  font-weight: 700;
+  color: #30232b;
+  margin-bottom: 14px;
+}
+
+.contact-method-card p {
+  font-size: 14px;
+  color: #887882;
+  line-height: 1.8;
+  max-width: 300px;
+  margin-bottom: 20px;
+}
+
+.contact-method-detail {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+  color: #d21165;
+  margin-bottom: 25px;
+}
+
+.contact-method-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #d21165;
+  color: #fff;
+  padding: 13px 25px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 650;
+  margin-top: auto;
+  transition: 0.3s ease;
+}
+
+.contact-method-btn:hover {
+  background: #ad0e52;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 576px) {
+  .contact-method-card {
+    padding: 30px 20px;
+    border-radius: 16px;
+  }
+
+  .contact-method-icon {
+    width: 65px;
+    height: 65px;
+    border-radius: 16px;
+  }
+
+  .contact-method-card h3 {
+    font-size: 20px;
+  }
+
+  .contact-method-detail {
+    font-size: 16px;
+  }
+
+  .contact-method-btn {
+    width: 100%;
+  }
+}

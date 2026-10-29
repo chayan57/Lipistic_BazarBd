@@ -18,7 +18,7 @@ function SpecialOffer() {
       subtitle: "SPECIAL OFFER",
       description:
         "Explore exciting products and special offers at DazroShop. Find quality watches, gadgets, lifestyle products, and more.",
-      image: "/hero-baner.png",
+      image: "/lipistic.png",
     },
     {
       id: 2,
@@ -26,7 +26,7 @@ function SpecialOffer() {
       subtitle: "TRENDING NOW",
       description:
         "Discover popular products at DazroShop and find something perfect for your everyday needs.",
-      image: "/hero-baner.png",
+      image: "/good-lipistic.png",
     },
     {
       id: 3,
@@ -34,7 +34,7 @@ function SpecialOffer() {
       subtitle: "SHOP TODAY",
       description:
         "Explore our growing collection of quality products with convenient online shopping across Bangladesh.",
-      image: "/hero-baner.png",
+      image: "/lipistic.png",
     },
   ];
 
