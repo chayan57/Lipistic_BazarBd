@@ -3876,19 +3876,20 @@ padding-top: 8px !important;
   }
 
   .dazro-hero-label {
-    font-size: 13px;
+    font-size: 16px;
   }
 
   .dazro-hero-title {
-    font-size: 30px;
+    font-size: 35px;
     line-height: 1.2;
   
   }
 
   .dazro-hero-description {
-    font-size: 13px;
+    font-size: 17px;
     line-height: 1.6;
     max-width: 320px;
+   
     
   }
 
@@ -3898,7 +3899,7 @@ padding-top: 8px !important;
   }
 
   .dazro-hero-image {
-    max-width: 390px;
+    max-width: 365px;
     background-size: cover;
   }
 }

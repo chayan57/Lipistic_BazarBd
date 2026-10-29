@@ -94,8 +94,8 @@ export default function Navbar() {
             <Image
               src="/logo.png"
               alt="DazroShop"
-              width={75}
-              height={75}
+              width={80}
+              height={80}
               priority
               style={{
                 width: "clamp(48px, 12vw, 75px)",
@@ -110,7 +110,7 @@ export default function Navbar() {
               component={Link}
               href="/"
               sx={navButtonStyle(pathname === "/")}
-              style={{fontSize:"18px"}}
+              style={{fontSize:"17px"}}
               className="text-black"
             >
               Home
@@ -122,7 +122,7 @@ export default function Navbar() {
               sx={navButtonStyle(
                 pathname.startsWith("/products")
               )}
-              style={{fontSize:"18px"}}
+              style={{fontSize:"17px"}}
               className="text-black "
             >
               Products
