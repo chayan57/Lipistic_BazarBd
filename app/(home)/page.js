@@ -37,10 +37,7 @@ export default function Home() {
                   {" "}You Love
                 </h1>
 
-                <p className="dazro-hero-description text-white mb-3">
-                  Discover quality products, great deals, and
-                  everyday essentials—all in one place.
-                </p>
+                
 
                 <Link
                   href="/products"
