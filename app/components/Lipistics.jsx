@@ -8,13 +8,14 @@ const products = [
   {
     id: "lipstick-1",
     name: "Makup Rich Lipstick Set",
-    description: "Long-lasting rich color with a smooth matte finish.",
+    description:
+      "Long-lasting rich color with a smooth matte finish.",
     price: 500,
     oldPrice: 650,
     image: "/lipistic.png",
     badge: "Best Seller",
   },
-  {
+   {
     id: "lipstick-2",
     name: "Luxury Lipstick Set",
     description: "Soft creamy texture for a beautiful everyday look.",
@@ -27,8 +28,10 @@ const products = [
 
 const initialForm = {
   name: "",
+  email: "",
   phone: "",
   address: "",
+  city: "",
   quantity: 1,
 };
 
@@ -38,19 +41,23 @@ export default function Lipistics() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [orderNumber, setOrderNumber] = useState("");
 
   const openOrderForm = (product) => {
     setSelectedProduct(product);
     setForm(initialForm);
     setSuccess(false);
     setError("");
+    setOrderNumber("");
   };
 
   const closeOrderForm = () => {
     if (loading) return;
+
     setSelectedProduct(null);
     setSuccess(false);
     setError("");
+    setOrderNumber("");
   };
 
   const handleChange = (e) => {
@@ -69,6 +76,7 @@ export default function Lipistics() {
 
     setLoading(true);
     setError("");
+    setSuccess(false);
 
     try {
       const response = await fetch("/api/orders", {
@@ -77,10 +85,12 @@ export default function Lipistics() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          productId: `lipstick-${selectedProduct.id}`,
+          productId: selectedProduct.id,
           name: form.name.trim(),
+          email: form.email.trim(),
           phone: form.phone.trim(),
           address: form.address.trim(),
+          city: form.city.trim(),
           quantity: Number(form.quantity),
         }),
       });
@@ -93,10 +103,15 @@ export default function Lipistics() {
         );
       }
 
+      setOrderNumber(data.orderNumber || "");
       setSuccess(true);
       setForm(initialForm);
     } catch (err) {
-      setError(err.message || "Something went wrong.");
+      console.error("Order error:", err);
+
+      setError(
+        err.message || "Something went wrong."
+      );
     } finally {
       setLoading(false);
     }
@@ -192,7 +207,9 @@ export default function Lipistics() {
                 id="lipistics-order-title"
                 className="lipistics-modal-title mb-0"
               >
-                {success ? "Order Confirmed" : "Place Your Order"}
+                {success
+                  ? "Order Confirmed"
+                  : "Place Your Order"}
               </h3>
 
               <button
@@ -218,6 +235,13 @@ export default function Lipistics() {
                   Your order has been submitted successfully.
                   We will contact you soon.
                 </p>
+
+                {orderNumber && (
+                  <p>
+                    Order Number:
+                    <strong> {orderNumber}</strong>
+                  </p>
+                )}
 
                 <button
                   type="button"
@@ -272,7 +296,28 @@ export default function Lipistics() {
                   />
                 </div>
 
-                {/* Phone Number */}
+                {/* Email */}
+                <div className="mb-3">
+                  <label
+                    htmlFor="lipistics-email"
+                    className="form-label"
+                  >
+                    Email Address *
+                  </label>
+
+                  <input
+                    id="lipistics-email"
+                    type="email"
+                    name="email"
+                    className="form-control"
+                    placeholder="Enter your email"
+                    value={form.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                {/* Phone */}
                 <div className="mb-3">
                   <label
                     htmlFor="lipistics-phone"
@@ -295,7 +340,7 @@ export default function Lipistics() {
                   />
                 </div>
 
-                {/* Delivery Address */}
+                {/* Address */}
                 <div className="mb-3">
                   <label
                     htmlFor="lipistics-address"
@@ -309,10 +354,32 @@ export default function Lipistics() {
                     name="address"
                     className="form-control"
                     rows={3}
-                    placeholder="Village, Road, Area, District"
+                    placeholder="Village, Road, Area"
                     value={form.address}
                     onChange={handleChange}
                     maxLength={500}
+                    required
+                  />
+                </div>
+
+                {/* City */}
+                <div className="mb-3">
+                  <label
+                    htmlFor="lipistics-city"
+                    className="form-label"
+                  >
+                    City / District *
+                  </label>
+
+                  <input
+                    id="lipistics-city"
+                    type="text"
+                    name="city"
+                    className="form-control"
+                    placeholder="Enter your city or district"
+                    value={form.city}
+                    onChange={handleChange}
+                    maxLength={100}
                     required
                   />
                 </div>

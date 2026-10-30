@@ -1,43 +1,17 @@
 
 import dbConnect from "@/lib/connectDB";
-import mongoose from "mongoose";
+import Order from "@/models/Order";
 
 const productCatalog = {
   "lipstick-1": {
-    name: "Classic Matte Lipstick",
-    price: 450,
+    name: "Makup Rich Lipstick Set",
+    price: 500,
   },
   "lipstick-2": {
-    name: "Luxury Velvet Lipstick",
+    name: "Luxury Lipstick Set",
     price: 550,
   },
 };
-
-const OrderSchema = new mongoose.Schema(
-  {
-    productId: { type: String, required: true },
-    productName: { type: String, required: true },
-    price: { type: Number, required: true },
-    quantity: { type: Number, required: true },
-    totalPrice: { type: Number, required: true },
-    name: { type: String, required: true },
-    phone: { type: String, required: true },
-    address: { type: String, required: true },
-    paymentMethod: {
-      type: String,
-      default: "Cash on Delivery",
-    },
-    status: {
-      type: String,
-      default: "pending",
-    },
-  },
-  { timestamps: true }
-);
-
-const Order =
-  mongoose.models.LipstickOrder ||
-  mongoose.model("LipstickOrder", OrderSchema);
 
 export async function POST(request) {
   try {
@@ -51,46 +25,68 @@ export async function POST(request) {
       quantity,
     } = body;
 
-    const product = productCatalog[productId];
-    const qty = Number(quantity);
+    // Validate product
+    const product =
+      typeof productId === "string" &&
+      Object.prototype.hasOwnProperty.call(
+        productCatalog,
+        productId
+      )
+        ? productCatalog[productId]
+        : null;
 
     if (!product) {
       return Response.json(
-        { success: false, message: "Invalid product" },
+        {
+          success: false,
+          message: "Invalid product selected",
+        },
         { status: 400 }
       );
     }
 
+    const qty = Number(quantity);
+
+    // Validate customer details
     if (
       typeof name !== "string" ||
       !name.trim() ||
       name.trim().length > 100 ||
+      typeof phone !== "string" ||
+      !/^01\d{9}$/.test(phone.trim()) ||
       typeof address !== "string" ||
       !address.trim() ||
       address.trim().length > 500 ||
-      typeof phone !== "string" ||
-      !/^01\d{9}$/.test(phone.trim()) ||
       !Number.isInteger(qty) ||
       qty < 1 ||
       qty > 20
     ) {
       return Response.json(
-        { success: false, message: "Invalid order details" },
+        {
+          success: false,
+          message: "Invalid order details",
+        },
         { status: 400 }
       );
     }
 
+    // Connect MongoDB
     await dbConnect();
 
+    const totalPrice = product.price * qty;
+
+    // Save order
     const order = await Order.create({
       productId,
       productName: product.name,
       price: product.price,
       quantity: qty,
-      totalPrice: product.price * qty,
+      totalPrice,
       name: name.trim(),
       phone: phone.trim(),
       address: address.trim(),
+      paymentMethod: "Cash on Delivery",
+      status: "pending",
     });
 
     return Response.json(
@@ -102,12 +98,16 @@ export async function POST(request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Order error:", error);
+    // Show actual error in terminal
+    console.error("ORDER SAVE ERROR:", error);
 
     return Response.json(
       {
         success: false,
-        message: "Failed to place order",
+        message:
+          process.env.NODE_ENV === "development"
+            ? error.message
+            : "Failed to place order",
       },
       { status: 500 }
     );
